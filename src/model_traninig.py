@@ -1,13 +1,17 @@
+import os
 import joblib
 import matplotlib.pyplot as plt
 import seaborn as sns
+import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report, precision_score, recall_score, f1_score, accuracy_score, confusion_matrix
+from sklearn.metrics import roc_auc_score, roc_curve
 import data_preprocess
 
 
 model_path = r"C:\Users\Roy\Documents\VisualCode\Python\bank-prediction-casestudy\models\model.pkl"
+save_dir = r"C:\Users\Roy\Documents\VisualCode\Python\bank-prediction-casestudy\images"
 
 def train_model(data_path, output_model_path=model_path):
     global y_test, y_pred, class_labels
@@ -22,16 +26,16 @@ def train_model(data_path, output_model_path=model_path):
     print("Model Performance:")
     print(classification_report(y_test, y_pred, target_names=target_encoder.classes_, digits=3))
 
+   
+    # Save report as csv file
+    report = classification_report(y_test, y_pred, target_names=target_encoder.classes_, digits=3, output_dict=True)
+    report_df = pd.DataFrame(report).transpose()
+    report_df.to_csv(os.path.join(save_dir, "classification_report.csv"), index=True)
 
-
-    # Metrics calculation
-    accuracy = accuracy_score(y_test, y_pred)
-    #print(f"Accuracy: {accuracy:.3f}")
-    recall = recall_score(y_test, y_pred)
-    #print(f"Recall: {recall:.3f}")
-    precision = precision_score(y_test, y_pred)
-    #print(f"Precision: {precision:.3f}")
     
+    auc = roc_auc_score(y_test, y_pred)
+    print(f"ROC AUC Score: {auc:.2f}")
+
 
     joblib.dump({
         "model": model_clf,
@@ -43,9 +47,9 @@ def train_model(data_path, output_model_path=model_path):
 
 
 # confusion matrix
-save_path = r"C:\Users\Roy\Documents\VisualCode\Python\bank-prediction-casestudy\images\confusion_matrix.png"
-
-def plot_confusion_matrix(y_test, y_pred, class_labels, save_path=save_path):
+def plot_confusion_matrix(y_test, y_pred, class_labels, save_dir=save_dir, file_name="confusion_matrix.png"):
+    
+    save_path = os.path.join(save_dir, file_name)
     cm = confusion_matrix(y_test, y_pred)
     
     # Create a heatmap for confusion matrix
@@ -58,7 +62,21 @@ def plot_confusion_matrix(y_test, y_pred, class_labels, save_path=save_path):
     print(f"Confusion matrix saved at: {save_path}")
     plt.show()
 
+# Plot ROC curve
+def plot_roc_curve(y_test, y_pred, save_dir=save_dir, file_name="roc_curve.png"):
+    save_path = os.path.join(save_dir, file_name)
+    fpr, tpr, _ = roc_curve(y_test, y_pred)
+    plt.plot(fpr, tpr, label='ROC Curve')
+    plt.plot([0, 1], [0, 1], linestyle='--', color='gray') # Diagonal line
+    plt.xlabel("False Positive Rate")
+    plt.ylabel("True Positive Rate")
+    plt.title("ROC Curve")
+    plt.legend()
+    plt.savefig(save_path)
+    plt.show()
+
 
 train_model(data_path=data_preprocess.data_path, output_model_path=model_path)
 class_labels = ['Yes', 'No'] # target variable is binary with labels 'Yes' and 'No'
-plot_confusion_matrix(y_test, y_pred, class_labels,save_path=save_path)
+plot_confusion_matrix(y_test, y_pred, class_labels)
+plot_roc_curve(y_test, y_pred)
