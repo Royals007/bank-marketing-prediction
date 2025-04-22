@@ -1,4 +1,4 @@
-# Bankmarketing-Vorhersage – Fallstudie
+# Bankmarketing-Vorhersage – Usecase Studie
 
 Weitere Informationen zum Projekt findest du in der Datei task.md.
 

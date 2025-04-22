@@ -1,5 +1,3 @@
-Take Home Assignment Data Scientist | ca. 2 Stunden
-
 ## Aufgabenstellung:
 
 Unter dem folgenden Link haben Sie Zugriff auf einen Marketing-Datensatz einer portugiesischen Bank. Es wurde eine Marketingkampagne durchgeführt, mit dem Ziel, Kunden für Festgelder zu akquirieren (Variable «y»).  Die vorhandenen Daten dürften ausreichend beschrieben sein.
