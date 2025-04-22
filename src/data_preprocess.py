@@ -1,5 +1,4 @@
 from sklearn.preprocessing import LabelEncoder
-#from src.load_data import load_data
 import pandas as pd
 
 # Load the data

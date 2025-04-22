@@ -21,6 +21,5 @@ def predict(input_dict, model_path=trained_model_path):
         prediction = model.predict(df)
         return target_encoder.inverse_transform(prediction)[0]  #decode to original label (yes/no)
     
-
     except Exception as e:
         raise RuntimeError(f"Error loading model or encoders: {e}")

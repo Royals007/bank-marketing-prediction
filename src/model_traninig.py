@@ -1,4 +1,3 @@
-import os
 import joblib
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -15,6 +14,7 @@ save_dir = r"C:\Users\Roy\Documents\VisualCode\Python\bank-prediction-casestudy\
 
 def train_model(data_path, output_model_path=model_path):
     global y_test, y_pred, class_labels
+
     X, y, encoders, target_encoder = data_preprocess.preprocess_data(data_path)
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
@@ -25,13 +25,11 @@ def train_model(data_path, output_model_path=model_path):
     y_pred = model_clf.predict(X_test)
     print("Model Performance:")
     print(classification_report(y_test, y_pred, target_names=target_encoder.classes_, digits=3))
-
-   
+    
     # Save report as csv file
     report = classification_report(y_test, y_pred, target_names=target_encoder.classes_, digits=3, output_dict=True)
     report_df = pd.DataFrame(report).transpose()
     report_df.to_csv(os.path.join(save_dir, "classification_report.csv"), index=True)
-
     
     auc = roc_auc_score(y_test, y_pred)
     print(f"ROC AUC Score: {auc:.2f}")
@@ -77,6 +75,6 @@ def plot_roc_curve(y_test, y_pred, save_dir=save_dir, file_name="roc_curve.png")
 
 
 train_model(data_path=data_preprocess.data_path, output_model_path=model_path)
-class_labels = ['Yes', 'No'] # target variable is binary with labels 'Yes' and 'No'
+class_labels = ['Yes', 'No'] # target var binary with labels 'Yes' and 'No'
 plot_confusion_matrix(y_test, y_pred, class_labels)
 plot_roc_curve(y_test, y_pred)
